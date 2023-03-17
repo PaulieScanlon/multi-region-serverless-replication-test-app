@@ -153,7 +153,7 @@ const MainSection = ({ region, api, type }) => {
           <strong>{isLoading ? null : data.region}</strong>
         </div>
         <div>{isFetching ? null : <SvgImage buildings={data.buildings} />}</div>
-        <div className='flex flex-col gap-4 h-96 overflow-auto'>
+        <div className='flex flex-col gap-2 h-96 overflow-auto'>
           <Fragment>
             {buildings.map((building, index) => {
               return (
