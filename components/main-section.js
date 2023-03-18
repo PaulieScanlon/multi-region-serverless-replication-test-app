@@ -143,7 +143,7 @@ const MainSection = ({ region, api, type }) => {
 
   return (
     <section className='flex flex-col gap-16'>
-      <div className='flex flex-col gap-4 border border-gray-100 p-4 rounded'>
+      <div className='flex flex-col gap-4 border border-gray-100 p-4 rounded h-screen'>
         <div>
           <small className='capitalize'>{type}</small>
           <h2 className='flex gap-2 m-0 capitalize'>
@@ -152,22 +152,24 @@ const MainSection = ({ region, api, type }) => {
           </h2>
           <strong>{isLoading ? null : data.region}</strong>
         </div>
-        <div>{isFetching ? null : <SvgImage buildings={data.buildings} />}</div>
+        <div className='min-h-[200px]'>{isLoading ? null : <SvgImage buildings={data.buildings} />}</div>
         <div className='flex flex-col gap-2 h-96 overflow-auto'>
-          <Fragment>
-            {buildings.map((building, index) => {
-              return (
-                <BuildingBlock
-                  key={index}
-                  {...building}
-                  onCreate={(type, color) => create.mutate({ type: type, color: color })}
-                  onRemove={() => handleRemoveBuilding(index)}
-                  createIsLoading={create.isLoading}
-                  removeIsLoading={remove.isLoading}
-                />
-              );
-            })}
-          </Fragment>
+          {buildings.length > 0 ? (
+            <Fragment>
+              {buildings.map((building, index) => {
+                return (
+                  <BuildingBlock
+                    key={index}
+                    {...building}
+                    onCreate={(type, color) => create.mutate({ type: type, color: color })}
+                    onRemove={() => handleRemoveBuilding(index)}
+                    createIsLoading={create.isLoading}
+                    removeIsLoading={remove.isLoading}
+                  />
+                );
+              })}
+            </Fragment>
+          ) : null}
           {isFetching ? null : (
             <Fragment>
               {data.buildings.map((building, index) => {
