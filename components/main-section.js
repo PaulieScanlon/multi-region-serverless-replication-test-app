@@ -47,6 +47,7 @@ const MainSection = ({ region, api, type }) => {
           body: JSON.stringify({
             type: type,
             color: color,
+            depth: 0,
           }),
         });
 
