@@ -152,7 +152,7 @@ const MainSection = ({ region, api, type }) => {
           </h2>
           <strong>{isLoading ? null : data.region}</strong>
         </div>
-        <div className='min-h-[200px]'>{isLoading ? null : <SvgImage buildings={data.buildings} />}</div>
+        <div>{isLoading ? null : <SvgImage buildings={data.buildings} />}</div>
         <div className='flex flex-col gap-2 h-96 overflow-auto'>
           {buildings.length > 0 ? (
             <Fragment>
