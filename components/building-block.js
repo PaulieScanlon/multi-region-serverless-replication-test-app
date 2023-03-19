@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const BuildingBlock = ({
   id,
+  region,
   type,
   color,
   onCreate,
@@ -12,14 +13,31 @@ const BuildingBlock = ({
   updateIsLoading,
   createIsLoading,
 }) => {
-  const [colorValue, setColorValue] = useState(color);
-  const [typeValue, setTypeValue] = useState(type);
+  const [hasChanged, setHasChanged] = useState(false);
+  const [colorValue, setColorValue] = useState('');
+  const [typeValue, setTypeValue] = useState('');
+
+  useEffect(() => {
+    setColorValue(color);
+    setTypeValue(type);
+    setHasChanged(false);
+  }, [type, color]);
+
+  const handleTypeChange = (event) => {
+    setHasChanged(true);
+    setTypeValue(event.target.value);
+  };
+
+  const handleColorChange = (event) => {
+    setHasChanged(true);
+    setColorValue(event.target.value);
+  };
 
   return (
     <div className='flex gap-2 items-end'>
       <div className='flex flex-col grow'>
         <label htmlFor='type'>Type</label>
-        <select name='type' value={typeValue} onChange={(event) => setTypeValue(event.target.value)}>
+        <select name='type' value={typeValue} onChange={handleTypeChange}>
           <option hidden value='choose'>
             choose type
           </option>
@@ -30,23 +48,19 @@ const BuildingBlock = ({
       </div>
       <div>
         <label htmlFor='color'>Color</label>
-        <input
-          className='p-0 h-9'
-          name='color'
-          type='color'
-          value={colorValue}
-          onChange={(event) => setColorValue(event.target.value)}
-        />
+        <input className='p-0 h-9' name='color' type='color' value={colorValue} onChange={handleColorChange} />
       </div>
       <div className='flex grow gap-2 justify-end'>
         <button
           type='button'
           className={`${
             id
-              ? 'border border-blue-600 text-blue-600  disabled:border-gray-200'
+              ? `border ${
+                  hasChanged ? 'bg-green-500 text-white' : 'text-gray-400 border-gray-400'
+                } disabled:border-gray-200`
               : 'bg-green-500 text-white disabled:bg-gray-200'
-          }  p-2 rounded   disabled:text-gray-400 disabled:cursor-not-allowed`}
-          disabled={createIsLoading || updateIsLoading || typeValue === 'choose type' || !colorValue}
+          }  py-2 rounded disabled:text-gray-400 disabled:cursor-not-allowed`}
+          disabled={createIsLoading || updateIsLoading || typeValue === 'choose type' || !colorValue || !hasChanged}
           onClick={() => {
             id ? onUpdate(id, typeValue, colorValue) : onCreate(typeValue, colorValue);
           }}
@@ -57,7 +71,7 @@ const BuildingBlock = ({
             viewBox='0 0 24 24'
             strokeWidth={1.5}
             stroke='currentColor'
-            className='w-5 h-5'
+            className='w-4 h-4 min-w-[34px]'
           >
             <path
               strokeLinecap='round'
@@ -72,7 +86,7 @@ const BuildingBlock = ({
         </button>
         <button
           type='button'
-          className='border border-red-500 text-red-600 p-2 rounded disabled:border-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed'
+          className='border border-red-500 text-red-600 py-2 rounded disabled:border-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed'
           disabled={removeIsLoading}
           onClick={() => {
             onRemove(id);
@@ -84,7 +98,7 @@ const BuildingBlock = ({
             viewBox='0 0 24 24'
             strokeWidth={1.5}
             stroke='currentColor'
-            className='w-4 h-4'
+            className='w-4 h-4 min-w-[34px]'
           >
             <path
               strokeLinecap='round'
@@ -107,6 +121,8 @@ BuildingBlock.defaultProps = {
 BuildingBlock.propTypes = {
   /** The id of the block */
   id: PropTypes.string,
+  /** The region */
+  region: PropTypes.string,
   /** The type of the building */
   type: PropTypes.string,
   /** The color of the building */

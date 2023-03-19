@@ -19,14 +19,14 @@ module.exports = {
             select: {
               display: 'block',
               textTransform: 'capitalize',
-              border: `1px solid ${theme('colors.gray.100')}`,
+              border: `1px solid ${theme('colors.gray.200')}`,
               borderRadius: '0.25rem',
               padding: theme('spacing[1.5]'),
               paddingRight: theme('spacing[2]'),
             },
             input: {
               display: 'block',
-              border: `1px solid ${theme('colors.gray.100')}`,
+              border: `1px solid ${theme('colors.gray.200')}`,
               borderRadius: '0.25rem',
               padding: theme('spacing[1.5]'),
             },
