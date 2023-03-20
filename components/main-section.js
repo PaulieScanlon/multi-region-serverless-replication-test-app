@@ -122,7 +122,7 @@ const MainSection = ({ data, region, api, type, callback, depth, options }) => {
           <small className='capitalize'>{type}</small>
           <h2 className='flex gap-2 m-0 capitalize'>
             <span>{data.provider.flag}</span>
-            Create Building
+            create
           </h2>
           <strong>{data.region}</strong>
         </div>
@@ -166,25 +166,6 @@ const MainSection = ({ data, region, api, type, callback, depth, options }) => {
                 );
               });
           })}
-          {/* {data.buildings
-            .filter((building) => options.includes(building.type))
-            .map((building, index) => {
-              const { id, type, color } = building;
-              return (
-                <BuildingBlock
-                  key={index}
-                  id={id}
-                  type={type}
-                  color={color}
-                  onCreate={(type, color) => create.mutate({ type: type, color: color })}
-                  onUpdate={(id, type, color) => update.mutate({ id: id, type: type, color: color })}
-                  onRemove={(id) => remove.mutate(id)}
-                  updateIsLoading={update.isLoading}
-                  removeIsLoading={remove.isLoading}
-                  options={options}
-                />
-              );
-            })} */}
         </div>
         <div className='flex justify-end'>
           <button
@@ -211,7 +192,7 @@ const MainSection = ({ data, region, api, type, callback, depth, options }) => {
           <small className='capitalize'>{type}</small>
           <h2 className='flex gap-2 m-0 capitalize'>
             <span>{data.provider.flag}</span>
-            read buildings
+            read
           </h2>
           <strong>{data.region}</strong>
         </div>
