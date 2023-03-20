@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import BuildingBlock from './building-block';
 import SvgImage from './svg-image';
 
-const MainSection = ({ data, region, api, type, callback }) => {
+const MainSection = ({ data, region, api, type, callback, depth, options }) => {
   const [buildings, setBuildings] = useState([]);
 
   const create = useMutation({
@@ -20,7 +20,7 @@ const MainSection = ({ data, region, api, type, callback }) => {
           body: JSON.stringify({
             type: type,
             color: color,
-            depth: 0,
+            depth: depth,
           }),
         });
 
@@ -68,7 +68,6 @@ const MainSection = ({ data, region, api, type, callback }) => {
       }
     },
     onSuccess: async () => {
-      setBuildings([]);
       callback();
     },
   });
@@ -110,6 +109,12 @@ const MainSection = ({ data, region, api, type, callback }) => {
     setBuildings([...buildings.slice(0, index), ...buildings.slice(index + 1)]);
   };
 
+  const length = Object.values(data.buildings)
+    .map((arr) => {
+      return arr.filter((building) => options.includes(building.type)).map((building) => building).length;
+    })
+    .filter((item) => item)[0];
+
   return (
     <section className='flex flex-col gap-16'>
       <div className='flex flex-col gap-4 border border-gray-100 p-4 rounded h-screen'>
@@ -121,7 +126,7 @@ const MainSection = ({ data, region, api, type, callback }) => {
           </h2>
           <strong>{data.region}</strong>
         </div>
-        <div>{<SvgImage buildings={data.buildings} />}</div>
+        <div>{<SvgImage arr={data.buildings} />}</div>
         <div className='flex flex-col gap-2 h-96 overflow-auto'>
           <Fragment>
             {buildings.map((building, index) => {
@@ -133,35 +138,60 @@ const MainSection = ({ data, region, api, type, callback }) => {
                   onRemove={() => handleRemoveBuilding(index)}
                   createIsLoading={create.isLoading}
                   removeIsLoading={remove.isLoading}
+                  options={options}
                 />
               );
             })}
           </Fragment>
 
-          {data.buildings.map((building, index) => {
-            const { id, type, color } = building;
-            return (
-              <BuildingBlock
-                key={index}
-                region={region}
-                id={id}
-                type={type}
-                color={color}
-                onCreate={(type, color) => create.mutate({ type: type, color: color })}
-                onUpdate={(id, type, color) => update.mutate({ id: id, type: type, color: color })}
-                onRemove={(id) => remove.mutate(id)}
-                updateIsLoading={update.isLoading}
-                removeIsLoading={remove.isLoading}
-              />
-            );
+          {Object.values(data.buildings).map((arr) => {
+            return arr
+              .filter((building) => options.includes(building.type))
+              .map((building, index) => {
+                const { id, type, color } = building;
+
+                return (
+                  <BuildingBlock
+                    key={index}
+                    id={id}
+                    type={type}
+                    color={color}
+                    onCreate={(type, color) => create.mutate({ type: type, color: color })}
+                    onUpdate={(id, type, color) => update.mutate({ id: id, type: type, color: color })}
+                    onRemove={(id) => remove.mutate(id)}
+                    updateIsLoading={update.isLoading}
+                    removeIsLoading={remove.isLoading}
+                    options={options}
+                  />
+                );
+              });
           })}
+          {/* {data.buildings
+            .filter((building) => options.includes(building.type))
+            .map((building, index) => {
+              const { id, type, color } = building;
+              return (
+                <BuildingBlock
+                  key={index}
+                  id={id}
+                  type={type}
+                  color={color}
+                  onCreate={(type, color) => create.mutate({ type: type, color: color })}
+                  onUpdate={(id, type, color) => update.mutate({ id: id, type: type, color: color })}
+                  onRemove={(id) => remove.mutate(id)}
+                  updateIsLoading={update.isLoading}
+                  removeIsLoading={remove.isLoading}
+                  options={options}
+                />
+              );
+            })} */}
         </div>
         <div className='flex justify-end'>
           <button
             type='button'
             className='bg-blue-600 rounded-full shadow-lg text-white capitalize p-2  disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed'
             onClick={handleAddBuilding}
-            disabled={data.buildings.length >= 5}
+            disabled={length >= 5}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -197,7 +227,7 @@ MainSection.defaultProps = {
 
 MainSection.propTypes = {
   /** The read data */
-  data: PropTypes.any,
+  data: PropTypes.any.isRequired,
   /** The region id to use for the query */
   region: PropTypes.string.isRequired,
   /** The API URL */
@@ -205,7 +235,11 @@ MainSection.propTypes = {
   /** The type of region */
   type: PropTypes.oneOf(['primary', 'replica']),
   /** Reload the page */
-  callback: PropTypes.func,
+  callback: PropTypes.func.isRequired,
+  /** The depth of the svg paths */
+  depth: PropTypes.number,
+  /** The select options */
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default MainSection;

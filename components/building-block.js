@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 const BuildingBlock = ({
   id,
-  region,
   type,
   color,
   onCreate,
@@ -12,6 +11,7 @@ const BuildingBlock = ({
   removeIsLoading,
   updateIsLoading,
   createIsLoading,
+  options,
 }) => {
   const [hasChanged, setHasChanged] = useState(false);
   const [colorValue, setColorValue] = useState('');
@@ -41,9 +41,14 @@ const BuildingBlock = ({
           <option hidden value='choose'>
             choose type
           </option>
-          <option value='skyscraper'>skyscraper</option>
+          {options.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+          {/* <option value='skyscraper'>skyscraper</option>
           <option value='condo'>condo</option>
-          <option value='office'>office</option>
+          <option value='office'>office</option> */}
         </select>
       </div>
       <div>
@@ -139,6 +144,8 @@ BuildingBlock.propTypes = {
   updateIsLoading: PropTypes.bool,
   /** The status of the create mutation */
   removeIsLoading: PropTypes.bool.isRequired,
+  /** The select options */
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default BuildingBlock;
